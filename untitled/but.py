@@ -1,4 +1,4 @@
-__author__ = 'TONY'
+
 
 from tkinter import *
 import a
