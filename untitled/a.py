@@ -1,4 +1,4 @@
-__author__ = 'TONY'
+
 import _thread
 import socket
 import json
