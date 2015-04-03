@@ -2,6 +2,8 @@
 import _thread
 import socket
 import json
+import struct
+
 
 import requests
 
@@ -17,6 +19,8 @@ class Application():
     f = ''
     b = ''
     nn=0
+    words = ''
+    ip= ''
 
     def __init__(self, parent):
 
@@ -38,6 +42,12 @@ class Application():
         self.MyBut['foreground'] = "red"
         self.MyBut['command'] = self.MyButton_C
         self.MyBut.pack({"side": "top", "padx": 10, "pady": 20})
+
+        self.MyB = Button(parent, text="gege")
+        self.MyB['background'] = "#FFFFFF"
+        self.MyB['foreground'] = "red"
+        self.MyB['command'] = self.MyB_C
+        self.MyB.pack({"side": "top", "padx": 10, "pady": 20})
 
 
     def fun(self, a):
@@ -90,19 +100,58 @@ class Application():
     def MyButton_C(self):
         _thread.start_new_thread(self.loop0, ())
 
+    def MyB_C(self):
+
+
+       #  msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEARCH disney\r\n")
+
+
+        msg8 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC CANCEL\r\n")
+
+
+        self.irc.send(msg8)
+
+
+
+    def int2ip(addr):
+        return socket.inet_ntoa(struct.pack("!I", addr))
+
 
     def MyButton_Cl(self):
+        irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-        msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEARCH disney\r\n")
+       #  msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEARCH disney\r\n")
 
-
-        print(msg6)
-
+        msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEND #2\r\n")
         self.irc.send(msg6)
-
-        self.f=open ("oppo.avi", "wb")
         self.nn=1
+
+
+
+
+       #  irc22.connect((self.server, 6667))  # connects to the server
+       #  self.f=open ("oppo.avi", "wb")
+
+       #  while 1:  # puts it in a loop
+            # text = self.irc.recv(1024)  # receive the text
+
+
+
+            # self.f.write(text)
+
+
+
+
+
+
+
+
+
+        # irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # defines the socket
+        # irc22.connect()
+        #self.f=open ("oppo.avi", "wb")
+
 
 
     def loop0(self):
@@ -123,24 +172,38 @@ class Application():
         while 1:  # puts it in a loop
             text = self.irc.recv(2040)  # receive the text
             print(text)  # print text to console
+
+
             aa=text.decode("latin-1")
 
             if aa.find('PING') != -1:
                 msgmsg =str.encode('PONG ' + aa.split()[1] + '\r\n')
                 self.irc.send(msgmsg)  #returnes 'PONG' back to the server (prevents pinging out!)
 
-            if self.nn==0:
+            if aa.find('inviando') != -1:
+                uu=text.decode("latin-1")
+
+                self.words = uu.split()
+                print(self.words[24])
+                print(self.words[25])
 
 
-                self.b.write(text)
+                ip=socket.inet_ntoa(struct.pack('!L', int(self.words[24])))
+                print(ip)
+                irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                irc22.connect((ip,int( self.words[25])))
+                self.f=open (self.words[23], "wb")
+                print("wbccccccccccccccccccccccccccccc")
+                while 1:  # puts it in a loop
+                    text = irc22.recv(1024)  # receive the text
+                    self.f.write(text)
 
-            if not text: break
-            if self.nn==1:
 
-                self.f.write(text)
 
-        # if text.find('PING') != -1:  #check if 'PING' is found
-        # irc.send('PONG ' + text.split()[1] + '\r\n')  #returnes 'PONG' back to the server (prevents pinging out!)
+
+
+
+
 
 
 
