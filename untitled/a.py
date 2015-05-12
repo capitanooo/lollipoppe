@@ -3,17 +3,19 @@ import _thread
 import socket
 import json
 import struct
-
+from threading import *
 
 import requests
 
 from  but import *
 
 
+
+
 class Application():
-    server = "irc.oceanirc.net"  # settings
-    channel = "#oce@n"
-    botnick = "botname"
+    server = "irc.platinumirc.org"  # settings
+    channel = "#magic"
+    botnick = "lollo"
 
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # defines the socket
     f = ''
@@ -21,6 +23,12 @@ class Application():
     nn=0
     words = ''
     ip= ''
+    Title= ''
+    Bot= ''
+    Pack= ''
+    textlog= Text
+
+    t1 = Thread
 
     def __init__(self, parent):
 
@@ -31,23 +39,97 @@ class Application():
         btr = but(3, parent, 'top rated movies')
         bnp = but(4, parent, 'now playing movies')
 
-        self.MyButton = Button(parent, text="nnnn")
-        self.MyButton['background'] = "#FFFFFF"
-        self.MyButton['foreground'] = "red"
-        self.MyButton['command'] = self.MyButton_Cl
-        self.MyButton.pack({"side": "top", "padx": 10, "pady": 20})
+        frame1 = Frame(parent, bd=1, relief=SUNKEN)
+        frame1.pack(fill=X, padx=5, pady=5, side=TOP)
 
-        self.MyBut = Button(parent, text="cpppp")
-        self.MyBut['background'] = "#FFFFFF"
-        self.MyBut['foreground'] = "red"
-        self.MyBut['command'] = self.MyButton_C
-        self.MyBut.pack({"side": "top", "padx": 10, "pady": 20})
+        self.ButtonConnect= Button(frame1, text="Connect")
+        self.ButtonConnect['background'] = "#FFFFFF"
+        self.ButtonConnect['foreground'] = "red"
+        self.ButtonConnect['command'] = self.Connect
+        self.ButtonConnect.pack({"side": "left", "padx": 10, "pady": 10})
 
-        self.MyB = Button(parent, text="gege")
-        self.MyB['background'] = "#FFFFFF"
-        self.MyB['foreground'] = "red"
-        self.MyB['command'] = self.MyB_C
-        self.MyB.pack({"side": "top", "padx": 10, "pady": 20})
+        self.ButtonConne= Button(frame1, text="Cha")
+        self.ButtonConne['background'] = "#FFFFFF"
+        self.ButtonConne['foreground'] = "red"
+        self.ButtonConne['command'] = self.Conne
+        self.ButtonConne.pack({"side": "left", "padx": 10, "pady": 10})
+
+        self.ButtonConn= Button(frame1, text="CANCEL")
+        self.ButtonConn['background'] = "#FFFFFF"
+        self.ButtonConn['foreground'] = "red"
+        self.ButtonConn['command'] = self.Conn
+        self.ButtonConn.pack({"side": "left", "padx": 10, "pady": 10})
+
+        self.ButtonRemove= Button(frame1, text="Remove")
+        self.ButtonRemove['background'] = "#FFFFFF"
+        self.ButtonRemove['foreground'] = "red"
+        self.ButtonRemove['command'] = self.Remove
+        self.ButtonRemove.pack({"side": "left", "padx": 10, "pady": 10})
+
+        frame2 = Frame(parent, bd=1, relief=SUNKEN)
+        frame2.pack(fill=X, padx=5, pady=5, side=TOP)
+
+
+        self.ButtonSearch = Button(frame2, text="Search")
+        self.ButtonSearch['background'] = "#FFFFFF"
+        self.ButtonSearch['foreground'] = "red"
+        self.ButtonSearch['command'] = self.Search
+        self.ButtonSearch.pack({"side": "top", "padx": 10, "pady": 20})
+
+
+        labelBot = Label(frame2, text="Bot", relief=RAISED )
+        labelBot.pack(side=LEFT)
+
+
+        self.TextBot = Entry(frame2)
+        self.TextBot.pack(side=LEFT)
+
+
+        labelTitle = Label(frame2, text="Title", relief=RAISED )
+        labelTitle .pack(side=LEFT)
+
+        self.TextTitle = Entry(frame2)
+        self.TextTitle ['background'] = "#FFFFFF"
+        self.TextTitle ['foreground'] = "red"
+        self.TextTitle .pack(side=LEFT)
+
+        frame = Frame(parent,bd=1, relief=SUNKEN)
+        frame.pack(fill=X, padx=5, pady=5)
+
+
+
+
+        self.ButtonGet_Pack = Button(frame, text="Get Pack")
+        self.ButtonGet_Pack['background'] = "#FFFFFF"
+        self.ButtonGet_Pack['foreground'] = "red"
+        self.ButtonGet_Pack['command'] = self.Get_Pack
+        self.ButtonGet_Pack.pack(side=TOP,pady=20)
+
+
+
+
+        labelPack = Label(frame, text="Pack", relief=RAISED )
+        labelPack .pack(side=LEFT)
+
+        self.TextPack = Entry(frame)
+        self.TextPack .pack(side=LEFT)
+
+        framelog = Frame(parent,bd=1, relief=SUNKEN)
+        framelog.pack(fill=X, padx=5, pady=5)
+
+        self.textlog = Text(framelog,width=1000)
+        self.textlog.insert(INSERT, "Hello.....")
+
+        self.textlog.pack()
+
+    def loopDCC(self,  ip,port,title):
+        irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        irc22.connect((ip,port))
+        f=open (title, "wb")
+        while 1:
+            text = irc22.recv(1024)
+            f.write(text)
+
 
 
     def fun(self, a):
@@ -97,19 +179,50 @@ class Application():
         tb.insert(INSERT, xx)
 
 
-    def MyButton_C(self):
+    def Remove(self):
+        Bot=self.TextBot.get()
+
+        msg6 = str.encode("PRIVMSG "+Bot+" XDCC REMOVE\r\n")
+        self.irc.send(msg6)  # join the chan
+
+    def Conn(self):
+        Bot=self.TextBot.get()
+        msg6 = str.encode("PRIVMSG "+Bot+" XDCC CANCEL\r\n")
+
+
+        self.irc.send(msg6)  # join the chan
+
+
+    def Conne(self):
+        msg4 = str.encode("JOIN " + self.channel + "\n")
+
+
+        self.irc.send(msg4)  # join the chan
+
+
+    def Connect(self):
         _thread.start_new_thread(self.loop0, ())
 
-    def MyB_C(self):
+    def Search(self):
 
 
-       #  msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEARCH disney\r\n")
+       #  msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC CANCEL\r\n")
+       #DCC RESUME filename port position
+       #PRIVMSG bot  :DCC RESUME filename port position
+       #PRIVMSG utente :DCC ACCEPT filename port position
+       #At this point utente connects to bot address and port and the transfer begins
+
+        Bot=self.TextBot.get()
+        Title=self.TextTitle.get()
+
+        msg="PRIVMSG "+Bot+" XDCC SEARCH "+Title+"\r\n"
+        print(msg)
 
 
-        msg8 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC CANCEL\r\n")
+        searchmsg = str.encode(msg)
 
 
-        self.irc.send(msg8)
+        self.irc.send(searchmsg)
 
 
 
@@ -117,13 +230,16 @@ class Application():
         return socket.inet_ntoa(struct.pack("!I", addr))
 
 
-    def MyButton_Cl(self):
-        irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def Get_Pack(self):
 
 
-       #  msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEARCH disney\r\n")
 
-        msg6 = str.encode("PRIVMSG XDCC|OceaN|CaRTooN|01 XDCC SEND #2\r\n")
+        Bot=self.TextBot.get()
+        Pack=self.TextPack.get()
+        msg="PRIVMSG "+Bot+" XDCC SEND "+Pack+"\r\n"
+        print(msg)
+
+        msg6 = str.encode(msg)
         self.irc.send(msg6)
         self.nn=1
 
@@ -141,16 +257,10 @@ class Application():
             # self.f.write(text)
 
 
-
-
-
-
-
-
-
         # irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # defines the socket
         # irc22.connect()
         #self.f=open ("oppo.avi", "wb")
+
 
 
 
@@ -166,8 +276,8 @@ class Application():
         self.irc.send(msg)  # user authentication
         self.irc.send(msg2)  # sets nick
         self.irc.send(msg3)  # auth
-        self.irc.send(msg4)  # join the chan
-        self.b=open ("oppo.txt", "wb")
+        # self.irc.send(msg4)  # join the chan
+
 
         while 1:  # puts it in a loop
             text = self.irc.recv(2040)  # receive the text
@@ -176,34 +286,53 @@ class Application():
 
             aa=text.decode("latin-1")
 
+
+            self.textlog.insert(INSERT, aa)
+            self.textlog.see(END)
+
             if aa.find('PING') != -1:
                 msgmsg =str.encode('PONG ' + aa.split()[1] + '\r\n')
                 self.irc.send(msgmsg)  #returnes 'PONG' back to the server (prevents pinging out!)
 
-            if aa.find('inviando') != -1:
+            if aa.find('DCC SEND') != -1 and not "per il quale eri in coda" in aa:
                 uu=text.decode("latin-1")
 
                 self.words = uu.split()
-                print(self.words[24])
-                print(self.words[25])
+                print(self.words)
+                print(len(self.words))
+                print(self.words[len(self.words)-2])
+                print(self.words[len(self.words)-1])
 
 
-                ip=socket.inet_ntoa(struct.pack('!L', int(self.words[24])))
+
+                ip=socket.inet_ntoa(struct.pack('!L', int(self.words[len(self.words)-3])))
                 print(ip)
-                irc22 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                irc22.connect((ip,int( self.words[25])))
-                self.f=open (self.words[23], "wb")
+
+
                 print("wbccccccccccccccccccccccccccccc")
-                while 1:  # puts it in a loop
-                    text = irc22.recv(1024)  # receive the text
-                    self.f.write(text)
+
+                self.textlog.insert(INSERT, self.words)
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
+                self.textlog.insert(INSERT, len(self.words))
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
+                self.textlog.insert(INSERT, self.words[len(self.words)-4])
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
+                self.textlog.insert(INSERT, ip)
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
+                self.textlog.insert(INSERT, self.words[len(self.words)-2])
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
+                self.textlog.insert(INSERT, "wbccccccccccccccccccccccccccccc")
+                self.textlog.insert(INSERT, '\r\n')
+                self.textlog.see(END)
 
 
 
+                t1= Thread(target=self.loopDCC, args=(ip,int(self.words[len(self.words)-2]),self.words[len(self.words)-4]))
 
-
-
-
-
-
+                t1.start()
 
